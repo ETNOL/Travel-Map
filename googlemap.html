@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type='text/javascript' src='js/jquery-1.11.0.js'></script>
+    <script type='text/javascript' src='https://cdn.firebase.com/js/client/1.0.11/firebase.js'></script>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      #map-canvas { height:400px; max-height:400px; max-width:800px;}
+      #form { padding-top:500px, border:1px solid black; }
+    </style>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+    <script type="text/javascript">
+
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas">
+    </div>
+    <div class="form">
+      <form id='placeForm'>
+        Place: <input id="searchTextField" type="text" size="50" placeholder="Add your location..."><br>
+        Comments: <input id="commentsField" type="text" size="100" placeholder="Add comments..."><br>
+        Submitted by: <input type="text" id="submitter" placeholder="Your name!">
+        <input type='submit' id="submit" text="Add your place!">
+      </form>
+      <div id="confirmation"></div>
+    </div>
+    <script type='text/javascript' src='js/map.js'></script>
+    <script type="text/javascript">
+      var input = document.getElementById('searchTextField');
+      var options = {
+        componentRestrictions: {country: 'us'}
+      };
+      autocomplete = new google.maps.places.Autocomplete(input, options);
+      </script>
+<p> Source code hosted on <a
+  </body>
+</html>
