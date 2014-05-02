@@ -34,8 +34,10 @@ var map = new google.maps.Map(document.getElementById("map-canvas"),
   mapOptions);
 map.setOptions({styles: styleArray});
 
-//Sets up DB connection //
-var PlaceRef = new Firebase('https://amber-fire-3032.firebaseIO.com/demoDB');
+// Sets up DB connection //
+var PlaceRef = new Firebase(
+  // Insert your database URL here//
+);
 
 // Populates map at load and retrieves new entries in real-time //
 PlaceRef.on('child_added', function(snapshot) {
