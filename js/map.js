@@ -68,7 +68,7 @@ $(Submit).submit(function( event ) {
   PlaceRef.push({
                       name:place.name,
                       lat:place.geometry.location.k,
-                      long:place.geometry.location.A,
+                      long:place.geometry.location.B,
                       submitter:Submitter,
                       comments:Comments });
 });
