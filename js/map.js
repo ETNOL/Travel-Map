@@ -1,15 +1,9 @@
 
-// Insert your Firebase database here //
-var database = new Firebase(
-"https://amber-fire-3032.firebaseio.com/demoDB"
-);
+var database = new Firebase( // Insert your Firebase database here  //
+  );
+var form_id = 'placeForm'; // Change your map form id if necessary //
 
-// Change your map form id if necessary //
-var form = $('#placeForm')
-
-// Play with different map attributes here, change your canvas id if different //
-var mapVars = {
-  
+var mapVars = { // Play with different map attributes here //  
   style : [
     {
       stylers: [
@@ -32,17 +26,16 @@ var mapVars = {
     }
   ],
   canvas : $('#map-canvas')[0],
-  centerCoord : { 
-  // Nice center point over North America //
-  lat:39.00, 
-  lng:-100.00 
+  centerCoord : { // Nice center point over North America //
+  lat: 39.00, 
+  lng: -100.00 
   },
-  zoomLevel:4
+  zoomLevel: 4 //Works well on desktops, may need to adjust/script for mobile friendly
 };
 
+
+
 // Thats it!  The rest shouldn't need any modifications. //
-
-
 
 
 var Map = function (mapVars) {
@@ -63,12 +56,11 @@ var Map = function (mapVars) {
 };
 
 
-var Marker = function(entry, map) {
+var Marker = function(map) {
 
-  this.setMarker = function () {
-    var newMarker = marker();
-    var newInfoWindow = infoWindow();
-    addMarkerListener(newMarker, newInfoWindow);
+  setMarker = function (entry) {
+    var newMarker = marker(entry);
+    addMarkerListener(newMarker, infoWindow(entry));
     newMarker.setMap(map);
   };
 
@@ -78,26 +70,26 @@ var Marker = function(entry, map) {
       });
   };
 
-  marker = function () {
+  marker = function (entry) {
     return new google.maps.Marker({
-      position: latLong(),
+      position: latLong(entry),
       map: map,
       title: entry.name,
       animation: google.maps.Animation.DROP
     });
   };
 
-  latLong = function () {
+  latLong = function (entry) {
     return new google.maps.LatLng(entry.lat, entry.long); 
   };
 
-  infoWindow = function () {
-    var infoWindowContent = contentHtml();
+  infoWindow = function (entry) {
+    var infoWindowContent = contentHtml(entry);
     return new google.maps.InfoWindow({content: infoWindowContent});
   };
 
 
-  contentHtml = function() {
+  contentHtml = function(entry) {
     return '<div id="content">'+
     '<div id="siteNotice">'+
     '</div>'+
@@ -108,37 +100,45 @@ var Marker = function(entry, map) {
     '</div>'+
     '</div>';
   };
+  return setMarker;
 };
 
 
-(function () {
+
+$( document ).ready( function () {
   var map = Map(mapVars);
+  var marker = Marker(map);
+  var place = autocomplete.getPlace();
+  var form = $('#' + form_id);
+  
   database.on('child_added', function(snapshot) {
     var entry = snapshot.val();
-    newMarker = new Marker(entry, map);
-    newMarker.setMarker();
+    marker(entry);
   });
 
+  var getNewEntry = function() {
+    var newEntry = {
+        name:place.name,
+        lat:place.geometry.location.k,
+        long:place.geometry.location.B,
+        submitter:$('#submitter').val(),
+        comments:$('#commentsField').val()
+    };
+    return newEntry;
+  };
+
   form.submit(function( event ) {
-    var Submitter = $('#submitter').val();
-    var Comments = $('#commentsField').val();
-    var place = autocomplete.getPlace();
-    form.hide();
     confirmSubmission();
     event.preventDefault();
-    database.push({
-                        name:place.name,
-                        lat:place.geometry.location.k,
-                        long:place.geometry.location.B,
-                        submitter:Submitter,
-                        comments:Comments });
+    database.push(getNewEntry());
   });
 
   function confirmSubmission() {
+    form.hide();
     var Confirmation = $('#confirmation');
     Confirmation.text('Thank you for your submission!');
   };
-})(); 
+}); 
 
 
 
